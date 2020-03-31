@@ -57,7 +57,7 @@
 }
  
 .icon-dollar:before { content: '\e800';font-size: 60px; color: white; } /* '' */
-.icon-money:before { content: '\e801';font-size: 100px; margin-top: 10px; } /* '' */
+.icon-money:before { content: '\e801';font-size: 20px; } /* '' */
 .icon-home:before { content: '\e802'; margin-right:6px;} /* '' */
 .icon-lock:before { content: '\e803'; } /* '' */
 .icon-cog:before { content: '\e804'; margin-right:6px;} /* '' */
