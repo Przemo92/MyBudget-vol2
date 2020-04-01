@@ -34,6 +34,13 @@ body
 	background-color: ##404040;
 	border: 2px solid #cccccc;
 }
+.balance
+{
+	background-color: ##404040;
+	border: 2px solid #cccccc;
+	round: 5ps;
+	float: left;
+}
 .row img
 {
 	width: 100%;
