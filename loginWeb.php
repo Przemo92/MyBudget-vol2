@@ -1,3 +1,14 @@
+<?php
+
+	session_start();
+	
+	if((isset($_SESSION['loged']))&&($_SESSION['loged']==true))
+	{
+		header('Location: mainMenuWeb.php');
+		exit();
+	}
+		
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -28,10 +39,11 @@
 	
 		<div class="col-12 text-center bg-dark pb-2">
 							
-				<i class="icon-dollar"></i>
-				<h1>MyBudget</h1>
-				<i class="icon-dollar"></i>
-				
+				<a href="index.php">			
+					<i class="icon-dollar"></i>
+					<h1>MyBudget</h1>
+					<i class="icon-dollar"></i>
+				</a>
 		
 			<blockquote class="blockquote">
 				
@@ -55,12 +67,13 @@
 						
 						<h2 style="font-size: 26px;"><b>Logowanie</b></h2>
 							
+						<form action="backendLogin.php" method="post">
 							<div class="input-group mb-3 mt-3">
 							
 								<div class="input-group-prepend"> <!-- pozmieniaj id=basic-addon1 oraz aria-describedby="basic-addon1-->
-									<span class="input-group-text" id="basic-addon1"><i class="icon-mail-alt"></i></span>
+									<span class="input-group-text" id="basic-addon1"><i class="icon-user"></i></span>
 								</div>
-									<input type="text" class="form-control" placeholder="Adres e-mail" aria-label="Adres e-mail" aria-describedby="basic-addon1">
+									<input type="text" name="login" class="form-control" placeholder="Nazwa użytkownika" aria-label="Nazwa użytkownika" aria-describedby="basic-addon1">
 							</div>
 							
 							<div class="input-group mb-3">
@@ -68,10 +81,16 @@
 								<div class="input-group-prepend">
 									<span class="input-group-text"><i class="icon-lock"></i></span>
 								</div>
-									<input type="text" class="form-control" placeholder="Hasło" aria-label="Hasło" aria-describedby="basic-addon1">
+									<input type="password" name="pass" class="form-control" placeholder="Hasło" aria-label="Hasło" aria-describedby="basic-addon1">
 							</div>
+							<?php
+								if(isset($_SESSION['wrong']))
+									echo $_SESSION['wrong'];
+							?>
 							
-							<button class="btn btn-success btn-lg btn-block" type="submit"><i class="icon-login"></i>Zaloguj się</button>
+							<button class="btn btn-success btn-lg btn-block mt-3" type="submit"><i class="icon-login"></i>Zaloguj się</button>
+						</form>
+						
 					</div>
 					
 					

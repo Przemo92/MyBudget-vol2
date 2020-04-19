@@ -27,11 +27,11 @@
 	<header>
 	
 		<div class="col-12 text-center bg-dark pb-2">
-							
-				<i class="icon-dollar"></i>
-				<h1>MyBudget</h1>
-				<i class="icon-dollar"></i>
-				
+				<a href="index.php">			
+					<i class="icon-dollar"></i>
+					<h1>MyBudget</h1>
+					<i class="icon-dollar"></i>
+				</a>
 		
 			<blockquote class="blockquote">
 				
@@ -82,13 +82,13 @@
 					</div>
 					<div class="offset-lg-2 col-lg-4 p-2 mt-2 mr-1">
 							
-						<button class="btn btn-primary btn-lg btn-block" type="submit"><i class="icon-right-bold"></i>Zarejestruj się</button>
+						<button class="btn btn-primary btn-lg btn-block" type="submit" onClick="location.href='registrationWeb.php';"><i class="icon-right-bold"></i>Zarejestruj się</button>
 		
 					</div>
 					
 					<div class="col-lg-4 p-2 mt-2 ml-1">
 							
-						<button class="btn btn-success btn-lg btn-block" type="submit"><i class="icon-login"></i>Zaloguj się</button>
+						<button class="btn btn-success btn-lg btn-block" type="submit" onClick="location.href='loginWeb.php';"><i class="icon-login"></i>Zaloguj się</button>
 							
 					</div>
 					

@@ -1,3 +1,14 @@
+<?php
+	
+	session_start();
+	
+	if(!isset($_SESSION['loged']))
+	{
+		header('Location: loginWeb.php');
+		exit();
+	}
+?>	
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -82,7 +93,7 @@
 					</li>
 					
 					 <li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-off"></i>Wyloguj</a>
+						<a class="nav-link" href="logout.php"><i class="icon-off"></i>Wyloguj</a>
 					</li>
 				</ul>
 			</div>
@@ -100,7 +111,7 @@
 					
 					<div class="lol col-12 text-justify mt-3 p-3 mb-2">
 						
-						<h2 style="margin-bottom: 30px"><b>Witaj drogi użytkowniku! Co bedziemy robić?</b></h2>
+						<h2 style="margin-bottom: 30px"><b>Witaj drogi użytkowniku <?php echo $_SESSION['user']?>! Co bedziemy robić?</b></h2>
 						
 						<h2 style="margin-bottom: 20px;">Ponizej krótka instrukcja obsługi aplikacji.</h2>
 						

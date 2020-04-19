@@ -28,10 +28,11 @@
 	
 		<div class="col-12 text-center bg-dark pb-2">
 							
-				<i class="icon-dollar"></i>
-				<h1>MyBudget</h1>
-				<i class="icon-dollar"></i>
-				
+				<a href="index.php">			
+					<i class="icon-dollar"></i>
+					<h1>MyBudget</h1>
+					<i class="icon-dollar"></i>
+				</a>			
 		
 			<blockquote class="blockquote">
 				
