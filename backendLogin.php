@@ -21,35 +21,39 @@
 		$login = $_POST['login'];
 		$password = $_POST['pass'];
 		
-		$login = htmlentities($login, ENT_QUOTES, "UTF-8");
-		$password = htmlentities($password, ENT_QUOTES, "UTF-8");
-		
+		$login = htmlentities($login, ENT_QUOTES, "UTF-8");	
 		
 		
 		if($result = $connect->query(
-		sprintf("SELECT * FROM users WHERE username='%s' AND password='%s'",
-		mysqli_real_escape_string($connect,$login),
-		mysqli_real_escape_string($connect,$password))))
+		sprintf("SELECT * FROM users WHERE username='%s'",
+		mysqli_real_escape_string($connect,$login))))
 		{
 			$user_number = $result->num_rows;
 			if($user_number >0)
 			{
-				$_SESSION['loged'] = true;
+				$line = $result->fetch_assoc(); //tworzymy tablice line z wartosciami z bazy sql, które zwroci nam kwerenda $sql
 				
-				$line =$result->fetch_assoc(); //tworzymy tablice line z wartosciami z bazy sql, które zwroci nam kwerenda $sql
-				$_SESSION['user'] = $line['username'];
-				$_SESSION['id'] = $line['id'];
-				
-				unset($_SESSION['wrong']);
-				$result->close();
-				header('Location: mainMenuWeb.php');
+				if(password_verify($password, $line['password']))
+				{
+					$_SESSION['loged'] = true;
+					
+					$_SESSION['user'] = $line['username'];
+					$_SESSION['id'] = $line['id'];
+					
+					unset($_SESSION['wrong']);
+					$result->close();
+					header('Location: mainMenuWeb.php');
+				}
+				else{
+					$_SESSION['wrong'] = '<span style= "color: red"> Nieprawidłowy login lub hasło!</span>';
+					header('Location: loginWeb.php');
+				}
 			}
 			else{
 				$_SESSION['wrong'] = '<span style= "color: red"> Nieprawidłowy login lub hasło!</span>';
 				header('Location: loginWeb.php');
 			}
 		}
-		echo "blad";
 		$connect->close();
 	}
 ?>

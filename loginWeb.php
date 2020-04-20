@@ -64,7 +64,13 @@
 				<div class="row">
 					
 					<div class="offset-lg-4 col-lg-4 text-center mt-3 p-3 mb-2">
-						
+						<?php
+								if(isset ($_SESSION['registered']))
+								{
+									echo "<p>Dziękujemy za rejestracje! Możesz już się zalogować na swoje konto!</p>";
+									unset($_SESSION['registered']);
+								}
+							?>
 						<h2 style="font-size: 26px;"><b>Logowanie</b></h2>
 							
 						<form action="backendLogin.php" method="post">
