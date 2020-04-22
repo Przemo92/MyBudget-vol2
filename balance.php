@@ -53,16 +53,16 @@
 				<ul class="navbar-nav">
 				
 					<li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-home"></i>Strona główna</a>
+						<a class="nav-link" href="mainMenuWeb.php"><i class="icon-home"></i>Strona główna</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="addIncomeWeb.php"><i class="icon-money"></i>Dodaj przychód</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="addExpenceWeb.php"><i class="icon-basket"></i>Dodaj wydatek</a>
 					</li>
 					<li class="nav-item active">
-						<a class="nav-link" href="#"><i class="icon-money"></i>Dodaj przychód</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-basket"></i>Dodaj wydatek</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-chart-bar"></i>Przeglądaj bilans</a>
+						<a class="nav-link" href="balance.php"><i class="icon-chart-bar"></i>Przeglądaj bilans</a>
 					</li>
 					
 					<li class="nav-item dropdown " >
@@ -82,7 +82,7 @@
 					</li>
 					
 					 <li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-off"></i>Wyloguj</a>
+						<a class="nav-link" href="logout.php"><i class="icon-off"></i>Wyloguj</a>
 					</li>
 				</ul>
 			</div>
@@ -97,60 +97,35 @@
 			<div class="container">
 				
 				<div class="row">
-					
-					<div class="offset-lg-4 col-lg-4 text-center mt-3 p-3 mb-2">
-					
-						<h2><b>Wprowadź dane przychodu:</b></h2>
-						
-						<div class="input-group mb-3 mt-3">
-							
-								<div class="input-group-prepend"> <!-- pozmieniaj id=basic-addon1 oraz aria-describedby="basic-addon1-->
-									<span class="input-group-text" id="basic-addon1"><i class="icon-money-1"></i></span>
-								</div>
-									<input type="number" class="form-control" step="0.01" placeholder="Kwota" aria-label="Kwota" aria-describedby="basic-addon1">
-							</div>
-							
-							<div class="input-group mb-3">
-							
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="icon-calendar"></i></span>
-								</div>
-									<input type="date" class="form-control" id="datePicker" name="datePicker" aria-label="Data" aria-describedby="basic-addon1">
-							</div>
-							
-							<div class="input-group mb-3">
-								 
-									<select id="1" name="income" class="form-control"  aria-label="Text input with dropdown button">
-					
-										<option value="w">Wynagrodzenie</option>
-										<option value="o">Odsetki bankowe</option>
-										<option value="s">Sprzedaż na allegro</option>
-										<option value="i">Inne</option>
-										<option value="r" selected>--Wybierz rodzaj przychodu--</option>
-									
-									</select>
-
-							</div>
-							
-							<div class="input-group mb-4">
-							
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="icon-pencil-alt"></i></span>
-								</div>
-									<input type="text" class="form-control" placeholder="Komentarz" aria-label="Komantarz" aria-describedby="basic-addon1">
-							</div>
-							
-							<div class="col-lg-5 p-0" style="float: left; margin-left: 0px;">
-							
-								<button class="btn btn-success btn-lg btn-block" type="submit">Dodaj</button>
 				
-							</div>
-							
-							<div class="col-lg-5 p-0" style="float: right;">
-									
-								<button class="btn btn-danger btn-lg btn-block" type="reset">Anuluj</button>
-									
-							</div>
+					<h2 class="lol col-12 mt-4 text-center"><b>Bieżący miesiąc</b></h2>
+					
+					<div class="input-group offset-xl-9 col-xl-3">
+							 
+						<select id="1" name="date" class="form-control"  aria-label="Text input with dropdown button">
+		
+							<option value="w">Bieżący miesiąc</option>
+							<option value="o">Poprzedni miesiąc</option>
+							<option value="s">Ostatni rok</option>
+							<option value="r">Niestandardowy</option>
+						
+						</select>
+
+					</div>
+					
+					<div class="balance   col-lg-6 text-center mt-3 mb-2">
+					Przychody
+						
+					</div>
+					
+					<div class="balance  col-lg-6 text-center mt-3  mb-2">
+					Wydatki
+						
+					</div>
+					
+					<div class="balance   col-lg-12 text-center mt-3 mb-2">
+					Bilans
+						
 					</div>
 
 				</div>	

@@ -108,7 +108,7 @@
 		catch(Exception $e)
 		{
 			echo '<div style= "color: red">Błąd serwera! Przepraszamy za niedogodności i prosimy o rejestrację w innym terminie!</div>';
-			echo $e;
+			//echo $e;
 		}
 		
 	}

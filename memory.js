@@ -5,17 +5,3 @@ Date.prototype.toDateInputValue = (function() {
 });
 
 document.getElementById('datePicker').value = new Date().toDateInputValue();
-
-function appearComment() {
-  // Get the checkbox
-  var checkBox = document.getElementById("myCheck");
-  // Get the output text
-  var text = document.getElementById("komentarz");
-
-  // If the checkbox is checked, display the output text
-  if (checkBox.checked == true){
-    komentarz.style.display = "block";
-	} 	else {
-		komentarz.style.display = "none";
-	}
-}
