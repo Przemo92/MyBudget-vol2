@@ -1,3 +1,14 @@
+<?php
+	
+	session_start();
+	
+	if(!isset($_SESSION['loged']))
+	{
+		header('Location: loginWeb.php');
+		exit();
+	}
+?>
+	
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -19,7 +30,29 @@
 	<!--[if lt IE 9]>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
 	<![endif]-->
-	
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Work',     11],
+          ['Eat',      2],
+          ['Commute',  2],
+          ['Watch TV', 2],
+          ['Sleep',    7]
+        ]);
+
+        var options = {
+          title: 'My Daily Activities',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+    </script>
 </head>
 
 <body>
@@ -114,7 +147,52 @@
 					</div>
 					
 					<div class="balance   col-lg-6 text-center mt-3 mb-2">
-					Przychody
+					<?php
+					require_once "connect.php";
+					
+					mysqli_report(MYSQLI_REPORT_STRICT);
+						
+					try 
+					{
+						$connect = new mysqli($host, $db_user, $db_password, $db_name);
+						
+						if($connect->connect_errno!=0)
+						{
+							throw new Exception(mysqli_connect_errno());
+						}
+						else
+						{
+							$user_id = $_SESSION['id'];
+							
+							
+							if($result = $connect->query("SELECT date_of_income, amount, income_comment FROM incomes WHERE user_id=$user_id"))
+							
+							{
+								$user_number = $result->num_rows;
+								if($user_number >0)
+								{
+									while ($row = $result->fetch_assoc()) //tworzymy tablice line z wartosciami z bazy sql, które zwroci nam kwerenda $sql
+									{
+										echo "<div>data: ".$row["date_of_income"]." - kwota: ".$row["amount"]." - komentarz: ".$row["income_comment"]."</div>";
+									}
+									$result->close();
+								}
+								else 
+									echo "0 rezulataów";
+							}
+							else
+							{
+								throw new Exception($polaczenie->error);
+							}
+							$connect->close();
+						}
+					}
+					catch(Exception $e)
+					{
+						echo '<span style="color:red;">Błąd serwera! Przepraszamy za niedogodności i prosimy o wizytę w innym terminie!</span>';
+						//echo '<br />Informacja developerska: '.$e;
+					}
+					?>
 						
 					</div>
 					
@@ -127,6 +205,8 @@
 					Bilans
 						
 					</div>
+					
+					<div id="donutchart" style="width: 900px; height: 500px;"></div>
 
 				</div>	
 				

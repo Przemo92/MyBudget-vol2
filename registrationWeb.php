@@ -93,15 +93,51 @@
 					// walidacja udana
 					if($connect->query("INSERT INTO users VALUES (NULL, '$username', '$password_hash', '$email')"))
 					{
-						$_SESSION['registered'] = true;
-						header('Location: loginWeb.php');
+						$result->close();
+						if($result = $connect->query("SELECT * FROM users WHERE username='$username'"))
+						{
+							$row = $result->fetch_assoc();
+							$user_id = $row["id"];
+							$result->close();
+							
+							if($result = $connect->query("SELECT * FROM incomes_category_default"))
+							{
+									while ($row = $result->fetch_assoc()) 
+									{
+										$name = $row["name"];
+										$connect->query("INSERT INTO incomes_category_assigned_to_users VALUES (NULL, $user_id,'$name')");
+									}
+									$result->close();	
+							}
+							if($result = $connect->query("SELECT * FROM payment_methods_default"))
+							{
+									while ($row = $result->fetch_assoc()) 
+									{
+										$name = $row["name"];
+										$connect->query("INSERT INTO payment_methods_assigned_to_users VALUES (NULL, $user_id,'$name')");
+									}
+									$result->close();	
+							}
+							if($result = $connect->query("SELECT * FROM expenses_category_default"))
+							{
+									while ($row = $result->fetch_assoc()) 
+									{
+										$name = $row["name"];
+										$connect->query("INSERT INTO expenses_category_assigned_to_users VALUES (NULL, $user_id,'$name')");
+									}
+									$result->close();	
+									$_SESSION['registered'] = true;
+									header('Location: loginWeb.php');
+							}
+						}
+							else 		
+								throw new Exception ($connect->error);
 					}
 					else
 					{
 						throw new Exception ($connect->error);
 					}
 				}
-				
 				$connect->close();
 			}
 		}

@@ -1,3 +1,89 @@
+<?php
+	
+	session_start();
+	
+	if(isset($_SESSION['loged']))
+	{
+		if(isset($_POST['money']))
+		{
+			//ustawienie flagi udanej walidacji
+			$all_OK = true;
+			//poprawnosc money
+			$money = $_POST['money'];
+			if($money == "") 
+			{
+				$all_OK = false;
+				$_SESSION['e_money'] = '<div class="input-group mb-3" style= "color: red">Nie podano żadnej kwoty!</div>';
+			}
+			
+			//poprawnosc daty
+			
+			$date = $_POST['date'];
+			$sql_date = str_replace("-","", $date);
+
+			// poprawnosc rodzaju wydatku
+			
+			$expence = $_POST['expence'];
+			
+			if($expence == 0)
+			{
+				$all_OK = false;
+				$_SESSION['e_expence'] = '<div class="input-group mb-3" style= "color: red">Nie wybrano formy wydatku!</div>';
+			}
+			// poprawnosc kategorii wydatku
+			$category = $_POST['category'];
+			
+			if($category == 0)
+			{
+				$all_OK = false;
+				$_SESSION['e_category'] = '<div class="input-group mb-3" style= "color: red">Nie wybrano kategorii wydatku!</div>';
+			}
+			// poprawnosc komentarza
+			$comment = $_POST['comment'];
+		
+			require_once "connect.php";
+			
+			mysqli_report(MYSQLI_REPORT_STRICT);
+			try
+			{
+				$connect = new mysqli($host, $db_user, $db_password, $db_name);
+				if($connect->connect_errno!=0)
+				{
+					throw new Exception(mysqli_connect_errno());
+				}
+				else
+				{
+					if($all_OK == true)
+					{
+						
+						// walidacja udana
+						$user_id = $_SESSION['id'];
+						
+						if($connect->query("INSERT INTO expenses VALUES (NULL, $user_id,$category,$expence, $money, $sql_date, '$comment')"))
+						{
+							$_SESSION['added_expence'] = '<p style="color: green">Dodano wydatek! Chcesz wprowadzić następny?</p>';
+						}
+						else
+						{
+							throw new Exception ($connect->error);
+						}
+					}
+					$connect->close();
+				}
+			}
+			catch(Exception $e)
+			{
+				echo '<div style= "color: red">Błąd serwera! Przepraszamy za niedogodności i prosimy o rejestrację w innym terminie!</div>';
+				//echo $e;
+			}
+		}
+	}
+	else
+	{
+		header('Location: loginWeb.php');
+		exit();
+	}
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -28,9 +114,11 @@
 	
 		<div class="col-12 text-center bg-dark pb-2">
 							
-				<i class="icon-dollar"></i>
-				<h1>MyBudget</h1>
-				<i class="icon-dollar"></i>
+				<a href="mainMenuWeb.php">			
+					<i class="icon-dollar"></i>
+					<h1>MyBudget</h1>
+					<i class="icon-dollar"></i>
+				</a>
 				
 		
 			<blockquote class="blockquote">
@@ -99,71 +187,149 @@
 				<div class="row">
 					
 					<div class="offset-lg-4 col-lg-4 text-center mt-3 p-3 mb-2">
+						
+						<?php
+							if(isset ($_SESSION['added_expence']))
+							{
+								echo $_SESSION['added_expence'];
+								unset($_SESSION['added_expence']);
+							}
+						?>
 					
 						<h2><b>Wprowadź dane wydatku:</b></h2>
 						
-						<div class="input-group mb-3 mt-3">
-							
+						<form method="post">
+						
+							<div class="input-group mb-3 mt-3">
+								
 								<div class="input-group-prepend"> <!-- pozmieniaj id=basic-addon1 oraz aria-describedby="basic-addon1-->
 									<span class="input-group-text" id="basic-addon1"><i class="icon-money-1"></i></span>
 								</div>
-									<input type="number" class="form-control" step="0.01" placeholder="Kwota" aria-label="Kwota" aria-describedby="basic-addon1">
+									<input type="number" name="money" class="form-control" step="0.01" placeholder="Kwota" aria-label="Kwota" aria-describedby="basic-addon1">
 							</div>
+							<?php
+								if(isset($_SESSION['e_money']))
+								{
+									echo $_SESSION['e_money'];
+									unset($_SESSION['e_money']);
+								}		
+							?>
 							
 							<div class="input-group mb-3">
 							
 								<div class="input-group-prepend">
 									<span class="input-group-text"><i class="icon-calendar"></i></span>
 								</div>
-									<input type="date" class="form-control" id="datePicker" name="datePicker" aria-label="Data" aria-describedby="basic-addon1">
+									<input type="date" name="date" class="form-control" id="datePicker" name="datePicker" aria-label="Data" aria-describedby="basic-addon1">
 							</div>
 							
 							<div class="input-group mb-3">
 								 
 									<select id="1" name="expence" class="form-control"  aria-label="Text input with dropdown button">
-					
-										<option value="w">Gotówka</option>
-										<option value="o">Karta debetowa</option>
-										<option value="s">Karta kredytowa</option>
-										<option value="r" selected>--Wybierz sposób płatności--</option>
+										<?php
+										require_once "connect.php";
+										mysqli_report(MYSQLI_REPORT_STRICT);
+										try
+										{
+											$connect = new mysqli($host, $db_user, $db_password, $db_name);
+											if($connect->connect_errno!=0)
+											{
+												throw new Exception(mysqli_connect_errno());
+											}
+											else
+											{
+												$user_id = $_SESSION['id'];
+												if($result = $connect->query("SELECT * FROM payment_methods_assigned_to_users WHERE user_id=$user_id"))
+												{
+													while ($row = $result->fetch_assoc()) 
+													{
+														$cate_id = $row["id"];
+														$name = $row["name"];
+														echo '<option value="'.$cate_id.'">'.$name.'</option>';
+													}
+													$result->close();	
+												}	
+												else 		
+													throw new Exception ($connect->error);	
+												
+												$connect->close();
+											}
+										}
+										catch(Exception $e)
+										{
+											echo '<div style= "color: red">Błąd serwera! Przepraszamy za niedogodności i prosimy o rejestrację w innym terminie!</div>';
+											//echo $e;
+										}
+										?>
+										<option value="0" selected>--Wybierz sposób płatności--</option>
 									
 									</select>
 
 							</div>
+							<?php
+								if(isset($_SESSION['e_expence']))
+								{
+									echo $_SESSION['e_expence'];
+									unset($_SESSION['e_expence']);
+								}		
+							?>
 							
 							<div class="input-group mb-3">
 								 
 									<select id="2" name="category" class="form-control"  aria-label="Text input with dropdown button">
-					
-										<option value="w">Jedzenie</option>
-										<option value="o">Mieszkanie</option>
-										<option value="s">Transport</option>
-										<option value="s">Telekomunikacja</option>
-										<option value="s">Opieka zdrowotna</option>
-										<option value="s">Ubranie</option>
-										<option value="s">Higiena</option>
-										<option value="s">Dzieci</option>
-										<option value="s">Rozrywka</option>
-										<option value="s">Wycieczka</option>
-										<option value="s">Szkolenia</option>
-										<option value="s">Książki</option>
-										<option value="s">Oszczędności</option>
-										<option value="s">Emerytura</option>
-										<option value="s">Spłata długów</option>
-										<option value="s">Darowizna</option>
-										<option value="s">Inne wydatki</option>
-										<option value="r" selected>--Wybierz rodzaj wydatku--</option>
+										<?php
+										mysqli_report(MYSQLI_REPORT_STRICT);
+										try
+										{
+											$connect = new mysqli($host, $db_user, $db_password, $db_name);
+											if($connect->connect_errno!=0)
+											{
+												throw new Exception(mysqli_connect_errno());
+											}
+											else
+											{
+												$user_id = $_SESSION['id'];
+												if($result = $connect->query("SELECT * FROM expenses_category_assigned_to_users WHERE user_id=$user_id"))
+												{
+													while ($row = $result->fetch_assoc()) 
+													{
+														$cate_id = $row["id"];
+														$name = $row["name"];
+														echo '<option value="'.$cate_id.'">'.$name.'</option>';
+													}
+													$result->close();	
+												}	
+												else 		
+													throw new Exception ($connect->error);	
+												
+												$connect->close();
+											}
+										}
+										catch(Exception $e)
+										{
+											echo '<div style= "color: red">Błąd serwera! Przepraszamy za niedogodności i prosimy o rejestrację w innym terminie!</div>';
+											//echo $e;
+										}
+										?>
+										<option value="0" selected>--Wybierz rodzaj wydatku--</option>
 									
 									</select>
 
 							</div>
+							<?php
+								if(isset($_SESSION['e_category']))
+								{
+									echo $_SESSION['e_category'];
+									unset($_SESSION['e_category']);
+								}		
+							?>
 							
 							<div class="input-group mb-4">
 							
 								<div class="input-group-prepend">
 									<span class="input-group-text"><i class="icon-pencil-alt"></i></span>
 								</div>
-									<input type="text" class="form-control" placeholder="Komentarz" aria-label="Komantarz" aria-describedby="basic-addon1">
+									<input type="text" name="comment" class="form-control" placeholder="Komentarz" aria-label="Komantarz" aria-describedby="basic-addon1">
 							</div>
 							
 							<div class="col-lg-5 p-0" style="float: left; margin-left: 0px;">
@@ -177,6 +343,7 @@
 								<button class="btn btn-danger btn-lg btn-block" type="reset">Anuluj</button>
 									
 							</div>
+						</form>
 					</div>
 
 				</div>	

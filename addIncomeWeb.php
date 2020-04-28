@@ -13,7 +13,7 @@
 			if($money == "") 
 			{
 				$all_OK = false;
-				$_SESSION['e_money'] = '<div class="input-group mb-3" style= "color: red">Nie podałeś żadnej kwoty!</div>';
+				$_SESSION['e_money'] = '<div class="input-group mb-3" style= "color: red">Nie podano żadnej kwoty!</div>';
 			}
 			
 			//poprawnosc daty
@@ -24,7 +24,7 @@
 			// poprawnosc rodzaju przychodu
 			$income = $_POST['income'];
 			
-			if($income == 5)
+			if($income == 0)
 			{
 				$all_OK = false;
 				$_SESSION['e_income'] = '<div class="input-group mb-3" style= "color: red">Nie wybrano formy przychodu!</div>';
@@ -46,11 +46,7 @@
 				{
 					if($all_OK == true)
 					{
-						//$user_id = $connect->query(
-						//sprintf("SELECT id FROM users WHERE username='%s'",
-						//mysqli_real_escape_string($connect, "lolek"))))
-						//echo $user_id;
-						
+				
 						// walidacja udana
 						$user_id = $_SESSION['id'];
 						if($connect->query("INSERT INTO incomes VALUES (NULL, $user_id,$income,$money, $sql_date, '$comment')"))
@@ -219,13 +215,42 @@
 							<div class="input-group mb-3">
 								 
 									<select id="1" name="income" class="form-control"  aria-label="Text input with dropdown button">
-					
-										<option value="1">Wynagrodzenie</option>
-										<option value="2">Odsetki bankowe</option>
-										<option value="3">Sprzedaż na allegro</option>
-										<option value="4">Inne</option>
-										<option value="5" selected>--Wybierz rodzaj przychodu--</option>
-									
+										<?php
+										require_once "connect.php";
+										mysqli_report(MYSQLI_REPORT_STRICT);
+										try
+										{
+											$connect = new mysqli($host, $db_user, $db_password, $db_name);
+											if($connect->connect_errno!=0)
+											{
+												throw new Exception(mysqli_connect_errno());
+											}
+											else
+											{
+												$user_id = $_SESSION['id'];
+												if($result = $connect->query("SELECT * FROM incomes_category_assigned_to_users WHERE user_id=$user_id"))
+												{
+													while ($row = $result->fetch_assoc()) 
+													{
+														$cate_id = $row["id"];
+														$name = $row["name"];
+														echo '<option value="'.$cate_id.'">'.$name.'</option>';
+													}
+													$result->close();	
+												}	
+												else 		
+													throw new Exception ($connect->error);	
+												
+												$connect->close();
+											}
+										}
+										catch(Exception $e)
+										{
+											echo '<div style= "color: red">Błąd serwera! Przepraszamy za niedogodności i prosimy o rejestrację w innym terminie!</div>';
+											//echo $e;
+										}
+										?>
+										<option value="0" selected>--Wybierz rodzaj przychodu--</option>
 									</select>
 
 							</div>
