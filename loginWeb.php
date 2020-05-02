@@ -92,6 +92,7 @@
 							<?php
 								if(isset($_SESSION['wrong']))
 									echo $_SESSION['wrong'];
+								unset($_SESSION['wrong']);
 							?>
 							
 							<button class="btn btn-success btn-lg btn-block mt-3" type="submit"><i class="icon-login"></i>Zaloguj się</button>

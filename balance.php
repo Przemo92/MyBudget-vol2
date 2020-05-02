@@ -7,6 +7,16 @@
 		header('Location: loginWeb.php');
 		exit();
 	}
+	else
+	{
+		if(isset($_POST['balanceDate']))
+		{
+			$date = $_POST['balanceDate'];
+			$trueDate = str_replace("-","", $date);
+			echo "$trueDate";
+		}
+	}
+
 ?>
 	
 <!DOCTYPE html>
@@ -36,16 +46,72 @@
       google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Task', 'Hours per Day'],
-          ['Work',     11],
-          ['Eat',      2],
-          ['Commute',  2],
-          ['Watch TV', 2],
-          ['Sleep',    7]
+          ['Expense_category', 'cost'],				
+			<?php
+			require_once "connect.php";
+			mysqli_report(MYSQLI_REPORT_STRICT);
+				
+			try 
+			{
+				$connect = new mysqli($host, $db_user, $db_password, $db_name);
+				
+				if($connect->connect_errno!=0)
+				{
+					throw new Exception(mysqli_connect_errno());
+				}
+				else
+				{
+					$user_id = $_SESSION['id'];
+
+					if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id ORDER BY expense_category_assigned_to_user_id"))
+					{
+						$user_number = $result->num_rows;
+						if($user_number >0)
+						{
+							$temp_cat =0;
+							$expense_sum=0;
+							while ($row = $result->fetch_assoc()) //tworzymy tablice line z wartosciami z bazy sql, które zwroci nam kwerenda $sql
+							{
+								if($temp_cat!=$row["expense_category_assigned_to_user_id"])
+								{
+									$cat_id = $row["expense_category_assigned_to_user_id"];
+									$result2 = $connect->query("
+									SELECT 
+									SUM(expenses.amount) AS sum, expenses_category_assigned_to_users.name 
+									FROM 
+									expenses_category_assigned_to_users, expenses 
+									WHERE 
+									expenses_category_assigned_to_users.user_id = $user_id AND expenses_category_assigned_to_users.user_id = expenses.user_id AND expenses_category_assigned_to_users.id = $cat_id AND expenses_category_assigned_to_users.id = expenses.expense_category_assigned_to_user_id");
+									$row2 = $result2->fetch_assoc();
+									$name = $row2["name"];
+									$expense_sum = $row2['sum'];
+									$result2->close();
+									echo "['$name',     $expense_sum],";
+								}
+								$temp_cat =$row["expense_category_assigned_to_user_id"];
+							}
+							$result->close();
+						}
+						else 
+							echo "['brak danych',     1],";
+					}
+					else
+					{
+						throw new Exception($polaczenie->error);
+					}
+					$connect->close();
+				}
+			}
+			catch(Exception $e)
+			{
+				echo '<span style="color:red;">Błąd serwera! Przepraszamy za niedogodności i prosimy o wizytę w innym terminie!</span>';
+				//echo '<br />Informacja developerska: '.$e;
+			}
+			?>
         ]);
 
         var options = {
-          title: 'My Daily Activities',
+          title: 'Wydatki w wybranym okresie czasowym',
           pieHole: 0.4,
         };
 
@@ -134,21 +200,23 @@
 					<h2 class="lol col-12 mt-4 text-center"><b>Bieżący miesiąc</b></h2>
 					
 					<div class="input-group offset-xl-9 col-xl-3">
-							 
-						<select id="1" name="date" class="form-control"  aria-label="Text input with dropdown button">
-		
-							<option value="w">Bieżący miesiąc</option>
-							<option value="o">Poprzedni miesiąc</option>
-							<option value="s">Ostatni rok</option>
-							<option value="r">Niestandardowy</option>
-						
-						</select>
+						<div class="dropdown">
+							 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Bieżący miesiąc
+							 </button>
+							 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+								<button class="dropdown-item" onclick="currentMonth()" type="button">Bieżący miesiąc</button>
+								<button class="dropdown-item" onclick="previousMonth()" type="button">Poprzedni miesiąc</button>
+								<button class="dropdown-item" onclick="lastYear()" type="button">Ostatni rok</button>
+								<button class="dropdown-item" onclick="uncommonDate()" type="button">Niestandardowy</button>
+							 </div>
+						</div>
 
 					</div>
-					
+
 					<div class="balance   col-lg-6 text-center mt-3 mb-2">
+					<h2>PRZYCHODY</h2>
 					<?php
-					require_once "connect.php";
 					
 					mysqli_report(MYSQLI_REPORT_STRICT);
 						
@@ -163,22 +231,35 @@
 						else
 						{
 							$user_id = $_SESSION['id'];
-							
-							
-							if($result = $connect->query("SELECT date_of_income, amount, income_comment FROM incomes WHERE user_id=$user_id"))
+
+							if($result = $connect->query("SELECT * FROM incomes WHERE user_id=$user_id ORDER BY income_category_assigned_to_user_id, date_of_income"))
 							
 							{
 								$user_number = $result->num_rows;
 								if($user_number >0)
 								{
+									$temp_cat =0;
+									$income_sum =0;
 									while ($row = $result->fetch_assoc()) //tworzymy tablice line z wartosciami z bazy sql, które zwroci nam kwerenda $sql
 									{
+										if($temp_cat!=$row["income_category_assigned_to_user_id"])
+										{
+											$cat_id = $row["income_category_assigned_to_user_id"];
+											$result2 = $connect->query("SELECT name FROM incomes_category_assigned_to_users WHERE user_id=$user_id AND id=$cat_id");
+											$row2 = $result2->fetch_assoc();
+											$name = $row2["name"];
+											$result2->close();
+											echo "<div>$name</div>";
+										}
 										echo "<div>data: ".$row["date_of_income"]." - kwota: ".$row["amount"]." - komentarz: ".$row["income_comment"]."</div>";
+										$temp_cat =$row["income_category_assigned_to_user_id"];
+										$income_sum = $income_sum + $row["amount"];
+										
 									}
 									$result->close();
 								}
 								else 
-									echo "0 rezulataów";
+									echo "0 rezultatów";
 							}
 							else
 							{
@@ -197,16 +278,84 @@
 					</div>
 					
 					<div class="balance  col-lg-6 text-center mt-3  mb-2">
-					Wydatki
+					<h2>WYDATKI</h2>
+					<?php
+					
+					mysqli_report(MYSQLI_REPORT_STRICT);
 						
+					try 
+					{
+						$connect = new mysqli($host, $db_user, $db_password, $db_name);
+						
+						if($connect->connect_errno!=0)
+						{
+							throw new Exception(mysqli_connect_errno());
+						}
+						else
+						{
+							$user_id = $_SESSION['id'];
+							
+							
+							if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id ORDER BY expense_category_assigned_to_user_id, date_of_expense"))
+							
+							{
+								$user_number = $result->num_rows;
+								if($user_number >0)
+								{
+									$temp_cat =0;
+									$expense_sum=0;
+									while ($row = $result->fetch_assoc()) //tworzymy tablice line z wartosciami z bazy sql, które zwroci nam kwerenda $sql
+									{
+										if($temp_cat!=$row["expense_category_assigned_to_user_id"])
+										{
+											$cat_id = $row["expense_category_assigned_to_user_id"];
+											$result2 = $connect->query("SELECT name FROM expenses_category_assigned_to_users WHERE user_id=$user_id AND id=$cat_id");
+											$row2 = $result2->fetch_assoc();
+											$name = $row2["name"];
+											$result2->close();
+											echo "<div>$name</div>";
+										}
+										echo "<div>data: ".$row["date_of_expense"]." - kwota: ".$row["amount"]." - komentarz: ".$row["expense_comment"]."</div>";
+										$temp_cat =$row["expense_category_assigned_to_user_id"];
+										$expense_sum = $expense_sum + $row["amount"];
+									}
+									$result->close();
+								}
+								else 
+									echo "0 rezultatów";
+							}
+							else
+							{
+								throw new Exception($polaczenie->error);
+							}
+							$connect->close();
+						}
+					}
+					catch(Exception $e)
+					{
+						echo '<span style="color:red;">Błąd serwera! Przepraszamy za niedogodności i prosimy o wizytę w innym terminie!</span>';
+						//echo '<br />Informacja developerska: '.$e;
+					}
+					?>	
 					</div>
 					
 					<div class="balance   col-lg-12 text-center mt-3 mb-2">
-					Bilans
-						
+					<h2>BILANS</h2>
+					Przychody - Wydatki = Dochód
+						<?php
+						$balance = $income_sum - $expense_sum;
+						echo "<div>$income_sum - $expense_sum = $balance</div>";
+						if($balance<0)
+						{
+							echo "<div> Twój bilans finansowy jest ujemny, uważaj, popadasz w długi!</div>";
+						}
+						else
+							echo "<div> Gratulacje! Twój bilans finansowy jest dodatni! Zaoszczędziłeś $balance.</div>";
+							echo "$trueDate";
+						?>
 					</div>
 					
-					<div id="donutchart" style="width: 900px; height: 500px;"></div>
+					<div id="donutchart" style=" height: 500px;" class="col-lg-12 text-center mt-3 mb-2"></div>
 
 				</div>	
 				
