@@ -9,12 +9,14 @@
 	}
 	else
 	{
-		if(isset($_POST['balanceDate']))
+		$date1 = $_SESSION['currentDate'];
+		
+		if(isset($_SESSION['datka']))
 		{
-			$date = $_POST['balanceDate'];
-			$trueDate = str_replace("-","", $date);
-			echo "$trueDate";
+		$date1 = $_SESSION['datka'];
+		unset($_SESSION['datka']);
 		}
+
 	}
 
 ?>
@@ -63,7 +65,7 @@
 				{
 					$user_id = $_SESSION['id'];
 
-					if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id ORDER BY expense_category_assigned_to_user_id"))
+					if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense LIKE '$date1%' ORDER BY expense_category_assigned_to_user_id"))
 					{
 						$user_number = $result->num_rows;
 						if($user_number >0)
@@ -197,23 +199,33 @@
 				
 				<div class="row">
 				
-					<h2 class="lol col-12 mt-4 text-center"><b>Bieżący miesiąc</b></h2>
 					
-					<div class="input-group offset-xl-9 col-xl-3">
+					
+					<div class="input-group offset-xl-9 col-xl-3 mt-4" >
 						<div class="dropdown">
 							 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Bieżący miesiąc
+							<?php
+								$textDate = "Bieżący mieisąc";
+								if(isset ($_SESSION['textDate']))
+								{
+									$textDate = $_SESSION['textDate'];
+									unset($_SESSION['textDate']);
+								}
+								echo $textDate;
+							?>
 							 </button>
+							 <form>
 							 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-								<button class="dropdown-item" onclick="currentMonth()" type="button">Bieżący miesiąc</button>
-								<button class="dropdown-item" onclick="previousMonth()" type="button">Poprzedni miesiąc</button>
-								<button class="dropdown-item" onclick="lastYear()" type="button">Ostatni rok</button>
-								<button class="dropdown-item" onclick="uncommonDate()" type="button">Niestandardowy</button>
+								<button class="dropdown-item" name="current_Month" id="current_Month" value="Bieżący miesiąc" type="button">Bieżący miesiąc</button>
+								<button class="dropdown-item" name="prevoius_Month" id="prevoius_Month" value="Poprzedni miesiąc" type="button">Poprzedni miesiąc</button>
+								<button class="dropdown-item" name="current_Year" id="current_Year" value="Bieżący rok" type="button">Bieżący rok</button>
+								<button class="dropdown-item" onclick="uncommonDate()" value="Niestandardowy" type="button">Niestandardowy</button>
 							 </div>
+							 </form>
 						</div>
-
+							
+					<span id="wynik"></span>
 					</div>
-
 					<div class="balance   col-lg-6 text-center mt-3 mb-2">
 					<h2>PRZYCHODY</h2>
 					<?php
@@ -232,7 +244,7 @@
 						{
 							$user_id = $_SESSION['id'];
 
-							if($result = $connect->query("SELECT * FROM incomes WHERE user_id=$user_id ORDER BY income_category_assigned_to_user_id, date_of_income"))
+							if($result = $connect->query("SELECT * FROM incomes WHERE user_id=$user_id AND date_of_income LIKE '$date1%' ORDER BY income_category_assigned_to_user_id, date_of_income"))
 							
 							{
 								$user_number = $result->num_rows;
@@ -296,7 +308,7 @@
 							$user_id = $_SESSION['id'];
 							
 							
-							if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id ORDER BY expense_category_assigned_to_user_id, date_of_expense"))
+							if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense LIKE '$date1%' ORDER BY expense_category_assigned_to_user_id, date_of_expense"))
 							
 							{
 								$user_number = $result->num_rows;
@@ -343,15 +355,21 @@
 					<h2>BILANS</h2>
 					Przychody - Wydatki = Dochód
 						<?php
-						$balance = $income_sum - $expense_sum;
-						echo "<div>$income_sum - $expense_sum = $balance</div>";
-						if($balance<0)
+						if(isset($income_sum))
 						{
-							echo "<div> Twój bilans finansowy jest ujemny, uważaj, popadasz w długi!</div>";
+							$balance = $income_sum - $expense_sum;
+							echo "<div>$income_sum - $expense_sum = $balance</div>";
+							if($balance<0)
+							{
+								echo "<div> Twój bilans finansowy jest ujemny, uważaj, popadasz w długi!</div>";
+							}
+							else
+								echo "<div> Gratulacje! Twój bilans finansowy jest dodatni! Zaoszczędziłeś $balance.</div>";
+								echo $date1;
+								//echo $date2;
 						}
 						else
-							echo "<div> Gratulacje! Twój bilans finansowy jest dodatni! Zaoszczędziłeś $balance.</div>";
-							echo "$trueDate";
+							echo "<div> Brak danych!</div>";
 						?>
 					</div>
 					
@@ -366,7 +384,7 @@
 	</main>
 	
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	
 	<script src="js/bootstrap.min.js"></script>
@@ -375,3 +393,72 @@
 	
 </body>
 </html>
+
+<script>
+var today = new Date();
+
+$(document).ready(function(){
+	$("#prevoius_Month").click(function(){
+		var month = today.getMonth();
+		var year = today.getFullYear();
+		if(month<10)
+		{
+		  month="0"+month;
+		}
+		var datka = year+"-"+month;
+		alert (datka);
+		var textDate = $('#prevoius_Month').val();
+					 
+			$.ajax({
+			url: "balanceDate.php",
+			method: "POST",
+			data: {datka:datka, textDate:textDate}, //js:php
+				success:function()
+				{
+					location.reload();
+				}		 
+		});
+	});
+});
+$(document).ready(function(){
+	$("#current_Month").click(function(){
+		var month = today.getMonth()+1;
+		var year = today.getFullYear();
+		if(month<10)
+		{
+		  month="0"+month;
+		}
+		var datka = year+"-"+month;
+		alert (datka);
+		var textDate = $('#current_Month').val();
+					 
+			$.ajax({
+			url: "balanceDate.php",
+			method: "POST",
+			data: {datka:datka, textDate:textDate}, //js:php
+				success:function()
+				{
+					location.reload();
+				}		 
+		});
+	});
+});
+$(document).ready(function(){
+	$("#current_Year").click(function(){
+		var year = today.getFullYear();
+		var datka = year;
+		alert (datka);
+		var textDate = $('#current_Year').val();
+					 
+			$.ajax({
+			url: "balanceDate.php",
+			method: "POST",
+			data: {datka:datka, textDate:textDate}, //js:php
+				success:function()
+				{
+					location.reload();
+				}		 
+		});
+	});
+});
+</script>

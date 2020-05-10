@@ -27,7 +27,8 @@
 			
 			$login = htmlentities($login, ENT_QUOTES, "UTF-8");	
 			
-			
+			$_SESSION['currentDate'] = $_POST['currentDate'];
+			//$_SESSION['currentDate'] = $dd;
 			if($result = $connect->query(
 			sprintf("SELECT * FROM users WHERE username='%s'",
 			mysqli_real_escape_string($connect,$login))))

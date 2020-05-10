@@ -94,8 +94,8 @@
 									echo $_SESSION['wrong'];
 								unset($_SESSION['wrong']);
 							?>
-							
-							<button class="btn btn-success btn-lg btn-block mt-3" type="submit"><i class="icon-login"></i>Zaloguj się</button>
+							<input type="hidden" id="currentDate" name="currentDate">
+							<button class="btn btn-success btn-lg btn-block mt-3" type="submit" onclick="setCurrentDate()"><i class="icon-login"></i>Zaloguj się</button>
 						</form>
 						
 					</div>
@@ -114,6 +114,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	
 	<script src="js/bootstrap.min.js"></script>
+	
+	<script src="memory.js"></script>
 	
 </body>
 </html>

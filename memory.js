@@ -6,21 +6,20 @@ Date.prototype.toDateInputValue = (function() {
 });
 document.getElementById('datePicker').value = new Date().toDateInputValue();
 
+//document.getElementById('currentDate').value = new Date().toDateInputValue();
+
 //wyznaczanie zakresu dat do bilansu
 
-//var today = new Date();
+function setCurrentDate()
+{
+	var today = new Date();
 
-//var day = today.getDate();
-//var month = today.getMonth()+1;
-//var year = today.getFullYear();
-
-//if(dzien<10)
-//{
- // dzien="0"+dzien;
-//}
-//if(miesiac<10)
-//{
-//  miesiac="0"+miesiac;
-//}
-
-
+	var day = today.getDate();
+	var month = today.getMonth()+1;
+	var year = today.getFullYear();
+	if(month<10)
+	{
+	  month="0"+month;
+	}
+	document.getElementById('currentDate').value = year+"-"+month;
+}
