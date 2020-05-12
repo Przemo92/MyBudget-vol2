@@ -1,3 +1,14 @@
+<?php
+
+	session_start();
+	
+	if((isset($_SESSION['loged']))&&($_SESSION['loged']==true))
+	{
+		header('Location: mainMenuWeb.php');
+		exit();
+	}
+		
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -28,10 +39,11 @@
 	
 		<div class="col-12 text-center bg-dark pb-2">
 							
-				<i class="icon-dollar"></i>
-				<h1>MyBudget</h1>
-				<i class="icon-dollar"></i>
-				
+				<a href="index.php">			
+					<i class="icon-dollar"></i>
+					<h1>MyBudget</h1>
+					<i class="icon-dollar"></i>
+				</a>
 		
 			<blockquote class="blockquote">
 				
@@ -52,15 +64,22 @@
 				<div class="row">
 					
 					<div class="offset-lg-4 col-lg-4 text-center mt-3 p-3 mb-2">
-						
+							<?php
+								if(isset ($_SESSION['registered']))
+								{
+									echo "<p>Dziękujemy za rejestracje! Możesz już się zalogować na swoje konto!</p>";
+									unset($_SESSION['registered']);
+								}
+							?>
 						<h2 style="font-size: 26px;"><b>Logowanie</b></h2>
 							
+						<form action="backendLogin.php" method="post">
 							<div class="input-group mb-3 mt-3">
 							
 								<div class="input-group-prepend"> <!-- pozmieniaj id=basic-addon1 oraz aria-describedby="basic-addon1-->
-									<span class="input-group-text" id="basic-addon1"><i class="icon-mail-alt"></i></span>
+									<span class="input-group-text" id="basic-addon1"><i class="icon-user"></i></span>
 								</div>
-									<input type="text" class="form-control" placeholder="Adres e-mail" aria-label="Adres e-mail" aria-describedby="basic-addon1">
+									<input type="text" name="login" class="form-control" placeholder="Nazwa użytkownika" aria-label="Nazwa użytkownika" aria-describedby="basic-addon1">
 							</div>
 							
 							<div class="input-group mb-3">
@@ -68,10 +87,17 @@
 								<div class="input-group-prepend">
 									<span class="input-group-text"><i class="icon-lock"></i></span>
 								</div>
-									<input type="text" class="form-control" placeholder="Hasło" aria-label="Hasło" aria-describedby="basic-addon1">
+									<input type="password" name="pass" class="form-control" placeholder="Hasło" aria-label="Hasło" aria-describedby="basic-addon1">
 							</div>
-							
-							<button class="btn btn-success btn-lg btn-block" type="submit"><i class="icon-login"></i>Zaloguj się</button>
+							<?php
+								if(isset($_SESSION['wrong']))
+									echo $_SESSION['wrong'];
+								unset($_SESSION['wrong']);
+							?>
+							<input type="hidden" id="currentDate" name="currentDate">
+							<button class="btn btn-success btn-lg btn-block mt-3" type="submit" onclick="setCurrentDate()"><i class="icon-login"></i>Zaloguj się</button>
+						</form>
+						
 					</div>
 					
 					
@@ -88,6 +114,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	
 	<script src="js/bootstrap.min.js"></script>
+	
+	<script src="memory.js"></script>
 	
 </body>
 </html>

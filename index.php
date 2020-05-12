@@ -27,11 +27,11 @@
 	<header>
 	
 		<div class="col-12 text-center bg-dark pb-2">
-							
-				<i class="icon-dollar"></i>
-				<h1>MyBudget</h1>
-				<i class="icon-dollar"></i>
-				
+				<a href="index.php">			
+					<i class="icon-dollar"></i>
+					<h1>MyBudget</h1>
+					<i class="icon-dollar"></i>
+				</a>
 		
 			<blockquote class="blockquote">
 				
@@ -51,45 +51,46 @@
 				
 				<div class="row">
 					
-					<div class="offset-lg-4 col-lg-4 text-center mt-3 p-3 mb-2">
+					<div class="offset-lg-2 col-lg-8 text-center mt-3 p-3 mb-2">
+					
 						
-						<h2 style="font-size: 26px;"><b>Rejestracja</b></h2>
+						<h2>Czujesz się niestabilny finansowo?</h2>
+						<h2>Zbierasz pieniądze na swoje marzenia?</h2>
+						<h2>Dążysz do uczucia bezpieczeństwa finansowego?</h2>
+
+						<h2>Jeśli odpowiedź brzmi <b>TAK</b> na przynajmniej jedno z powyższych pytań, to jest to aplikacja dla Ciebie!!!</h2>
 						
-							<div class="input-group mb-3 mt-3">
+					</div>
+					<div class=" offset-lg-2 col-lg-4 pt-3 mr-1" >
 							
-								<div class="input-group-prepend"> <!-- pozmieniaj id=basic-addon1 oraz aria-describedby="basic-addon1-->
-									<span class="input-group-text" id="basic-addon1"><i class="icon-user"></i></span>
-								</div>
-									<input type="text" class="form-control" placeholder="Nazwa użytkownika" aria-label="Nazwa użytkownika" aria-describedby="basic-addon1">
-							</div>
+						<figure>
+							<img src="img/roslina.jpg" alt="plant">
+						</figure>
 							
-							<div class="input-group mb-3">
-							
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="icon-mail-alt"></i></span>
-								</div>
-									<input type="text" class="form-control" placeholder="Adres e-mail" aria-label="Adres e-mail" aria-describedby="basic-addon1">
-							</div>
-							
-							<div class="input-group mb-3">
-							
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="icon-lock"></i></span>
-								</div>
-									<input type="text" class="form-control" placeholder="Hasło" aria-label="Hasło" aria-describedby="basic-addon1">
-							</div>
-							
-							<div class="input-group mb-3">
-							
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="icon-lock"></i></span>
-								</div>
-									<input type="text" class="form-control" placeholder="Powtórz hasło" aria-label="Powtórz hasło" aria-describedby="basic-addon1">
-							</div>
-							
-							<button class="btn btn-primary btn-lg btn-block" type="submit"><i class="icon-right-bold"></i>Zarejestruj się</button>
 					</div>
 					
+					<div class=" col-lg-4 p-2 ml-1">
+							
+						<h2>Korzystanie z aplikacji jest bardzo proste:</h2>	
+						<ol>
+							<li>Zakładasz konto</li>
+							<li>Wpisujesz swoje przychody i wydatki</li>
+							<li>Korzystasz z przejrzystych bilansow i wykresów</li>
+							<li>Otrzymujesz wiedzę o swoich finansach zupełnie za <b>darmo</b></li>
+						</ol>
+							
+					</div>
+					<div class="offset-lg-2 col-lg-4 p-2 mt-2 mr-1">
+							
+						<button class="btn btn-primary btn-lg btn-block" type="submit" onClick="location.href='registrationWeb.php';"><i class="icon-right-bold"></i>Zarejestruj się</button>
+		
+					</div>
+					
+					<div class="col-lg-4 p-2 mt-2 ml-1">
+							
+						<button class="btn btn-success btn-lg btn-block" type="submit" onClick="location.href='loginWeb.php';"><i class="icon-login"></i>Zaloguj się</button>
+							
+					</div>
 					
 				</div>	
 				

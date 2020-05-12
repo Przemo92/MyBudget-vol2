@@ -1,3 +1,14 @@
+<?php
+	
+	session_start();
+	
+	if(!isset($_SESSION['loged']))
+	{
+		header('Location: loginWeb.php');
+		exit();
+	}
+?>	
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -28,9 +39,11 @@
 	
 		<div class="col-12 text-center bg-dark pb-2">
 							
-				<i class="icon-dollar"></i>
-				<h1>MyBudget</h1>
-				<i class="icon-dollar"></i>
+				<a href="mainMenuWeb.php">			
+					<i class="icon-dollar"></i>
+					<h1>MyBudget</h1>
+					<i class="icon-dollar"></i>
+				</a>
 				
 		
 			<blockquote class="blockquote">
@@ -48,41 +61,29 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			
-			<div class="lol col-lg-8 collapse navbar-collapse " id="navbarNav">
+			<div class="offset-lg-3 col-lg-8 offset-lg-3 collapse navbar-collapse" id="navbarNav">
 			
 				<ul class="navbar-nav">
 				
-					<li class="nav-item active">
-						<a class="nav-link" href="#"><i class="icon-home"></i>Strona główna</a>
+					<li class="nav-item active" style="background-color: white;">
+						<a class="nav-link" href="mainMenuWeb.php"><i class="icon-home"></i>Strona główna</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-money"></i>Dodaj przychód</a>
+						<a class="nav-link" href="addIncomeWeb.php"><i class="icon-money"></i>Dodaj przychód</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-basket"></i>Dodaj wydatek</a>
+						<a class="nav-link" href="addExpenceWeb.php"><i class="icon-basket"></i>Dodaj wydatek</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-chart-bar"></i>Przeglądaj bilans</a>
+						<a class="nav-link" href="balance.php"><i class="icon-chart-bar"></i>Przeglądaj bilans</a>
 					</li>
-					
-					<li class="nav-item dropdown " >
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i class="icon-calendar"></i>Wybierz okres
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="#">Bieżący miesiąc</a>
-							<a class="dropdown-item" href="#">Poprzedni miesiąc</a>
-							<a class="dropdown-item" href="#">Ostatni rok</a>
-							<a class="dropdown-item" href="#">Niestandardowy</a>
-						</div>
-					 </li>
-					 
+
 					 <li class="nav-item">
 						<a class="nav-link" href="#"><i class="icon-cog"></i>Ustawienia</a>
 					</li>
 					
-					 <li class="nav-item">
-						<a class="nav-link" href="#"><i class="icon-off"></i>Wyloguj</a>
+					 <li class="nav-item ">
+						<a class="nav-link" href="logout.php"><i class="icon-off"></i>Wyloguj</a>
 					</li>
 				</ul>
 			</div>
@@ -99,10 +100,14 @@
 				<div class="row">
 					
 					<div class="lol col-12 text-justify mt-3 p-3 mb-2">
-						
-						<h2 style="margin-bottom: 30px"><b>Witaj drogi użytkowniku! Co bedziemy robić?</b></h2>
-						
-						<h2 style="margin-bottom: 20px;">Ponizej krótka instrukcja obsługi aplikacji.</h2>
+						<header>
+							<h2 style="margin-bottom: 30px"><b>Witaj drogi użytkowniku <?php echo $_SESSION['user']?>! Co bedziemy robić?</b></h2>
+							
+							<img class="img-thumbnail float-right ml-3 mr-5 mt-2 mb-2" style="width: 400px;" src="img/kid2.jpg" alt="pig">
+							
+							<h2 style="margin-bottom: 20px;">Ponizej krótka instrukcja obsługi aplikacji.</h2>
+						</header>
+
 						
 						<p>"Strona główna" - przekierowanie na stronę główną z instrukcją obsługi.</p>
 						
@@ -111,8 +116,6 @@
 						<p>"Dodaj wydatkek" - wprowadzenie danych dla wydatku (kwota, data, rodzaj płatności, kategoria wydatku oraz opcjonalnie komentarz)</p>
 						
 						<p>"Przeglądaj bilans" - Przegląd przychodów i wydatków (automatycznie dla bieżącego miesiąca), bilans twoich finansów (ile zaoszczędziłeś danego miesiąca). Przy każdym przychodzie i wydatku umieszczono opcję usuwania oraz edycji.</p>
-						
-						<p>"Wybierz okres" - przegląd bilansu w określonym okresie czasu. Są do wyboru: bieżący miesiąc, poprzedni miesiąc, ostatni rok oraz okres niestandardowy. W opcji niestandardowy użytkownik musi wpisać okres, z którego chce zobaczyć bilans swoich finansów.</p>
 						
 						<p>"Ustawienia" - edycja konta użytkownika.</p>
 						
