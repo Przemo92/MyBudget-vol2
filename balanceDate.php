@@ -23,9 +23,12 @@
 		}
 		else
 		{
+
 			$_SESSION['datka']= $_POST['datka'];
 
 			$_SESSION['textDate'] = $_POST['textDate'];
+
+			$_SESSION['datka2']= $_POST['datka2'];
 
 			$connect->close();
 		}

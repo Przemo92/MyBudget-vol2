@@ -5,10 +5,9 @@ Date.prototype.toDateInputValue = (function() {
 	return local.toJSON().slice(0,10);
 });
 document.getElementById('datePicker').value = new Date().toDateInputValue();
+document.getElementById('datePicker2').value = new Date().toDateInputValue();
 
-//document.getElementById('currentDate').value = new Date().toDateInputValue();
-
-//wyznaczanie zakresu dat do bilansu
+//wyznaczanie aktualnej daty przy logowaniu
 
 function setCurrentDate()
 {

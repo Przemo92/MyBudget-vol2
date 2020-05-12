@@ -136,7 +136,7 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			
-			<div class="lol col-lg-8 collapse navbar-collapse" id="navbarNav">
+			<div class="offset-lg-3 col-lg-8 offset-lg-3 collapse navbar-collapse" id="navbarNav">
 			
 				<ul class="navbar-nav">
 				
@@ -146,30 +146,18 @@
 					<li class="nav-item">
 						<a class="nav-link" href="addIncomeWeb.php"><i class="icon-money"></i>Dodaj przychód</a>
 					</li>
-					<li class="nav-item active">
+					<li class="nav-item active" style="background-color: white;">
 						<a class="nav-link" href="addExpenceWeb.php"><i class="icon-basket"></i>Dodaj wydatek</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="balance.php"><i class="icon-chart-bar"></i>Przeglądaj bilans</a>
 					</li>
-					
-					<li class="nav-item dropdown " >
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i class="icon-calendar"></i>Wybierz okres
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="#">Bieżący miesiąc</a>
-							<a class="dropdown-item" href="#">Poprzedni miesiąc</a>
-							<a class="dropdown-item" href="#">Ostatni rok</a>
-							<a class="dropdown-item" href="#">Niestandardowy</a>
-						</div>
-					 </li>
-					 
+
 					 <li class="nav-item">
 						<a class="nav-link" href="#"><i class="icon-cog"></i>Ustawienia</a>
 					</li>
 					
-					 <li class="nav-item">
+					 <li class="nav-item ">
 						<a class="nav-link" href="logout.php"><i class="icon-off"></i>Wyloguj</a>
 					</li>
 				</ul>

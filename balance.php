@@ -64,8 +64,16 @@
 				else
 				{
 					$user_id = $_SESSION['id'];
-
-					if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense LIKE '$date1%' ORDER BY expense_category_assigned_to_user_id"))
+					
+					if (isset ($_SESSION['datka2']))
+							{
+								$date2 = $_SESSION['datka2'];
+								$expense_query = "SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense BETWEEN '$date1' AND '$date2' ORDER BY expense_category_assigned_to_user_id, date_of_expense";
+							}
+							else
+								$expense_query = "SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense LIKE '$date1%' ORDER BY expense_category_assigned_to_user_id, date_of_expense";
+							
+					if($result = $connect->query($expense_query))
 					{
 						$user_number = $result->num_rows;
 						if($user_number >0)
@@ -149,7 +157,7 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			
-			<div class="lol col-lg-8 collapse navbar-collapse" id="navbarNav">
+			<div class="offset-lg-3 col-lg-8 offset-lg-3 collapse navbar-collapse" id="navbarNav">
 			
 				<ul class="navbar-nav">
 				
@@ -162,27 +170,15 @@
 					<li class="nav-item">
 						<a class="nav-link" href="addExpenceWeb.php"><i class="icon-basket"></i>Dodaj wydatek</a>
 					</li>
-					<li class="nav-item active">
+					<li class="nav-item active" style="background-color: white;">
 						<a class="nav-link" href="balance.php"><i class="icon-chart-bar"></i>Przeglądaj bilans</a>
 					</li>
-					
-					<li class="nav-item dropdown " >
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i class="icon-calendar"></i>Wybierz okres
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="#">Bieżący miesiąc</a>
-							<a class="dropdown-item" href="#">Poprzedni miesiąc</a>
-							<a class="dropdown-item" href="#">Ostatni rok</a>
-							<a class="dropdown-item" href="#">Niestandardowy</a>
-						</div>
-					 </li>
-					 
+
 					 <li class="nav-item">
 						<a class="nav-link" href="#"><i class="icon-cog"></i>Ustawienia</a>
 					</li>
 					
-					 <li class="nav-item">
+					<li class="nav-item ">
 						<a class="nav-link" href="logout.php"><i class="icon-off"></i>Wyloguj</a>
 					</li>
 				</ul>
@@ -214,18 +210,70 @@
 								echo $textDate;
 							?>
 							 </button>
-							 <form>
+
 							 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 								<button class="dropdown-item" name="current_Month" id="current_Month" value="Bieżący miesiąc" type="button">Bieżący miesiąc</button>
 								<button class="dropdown-item" name="prevoius_Month" id="prevoius_Month" value="Poprzedni miesiąc" type="button">Poprzedni miesiąc</button>
 								<button class="dropdown-item" name="current_Year" id="current_Year" value="Bieżący rok" type="button">Bieżący rok</button>
-								<button class="dropdown-item" onclick="uncommonDate()" value="Niestandardowy" type="button">Niestandardowy</button>
+
+								<button class="dropdown-item" type="button" id="uncommon_Text_Date" value="Niestandardowy" data-toggle="modal" data-target="#exampleModalCenter">Niestandardowy</button>
 							 </div>
-							 </form>
 						</div>
-							
-					<span id="wynik"></span>
 					</div>
+					
+					<!-- Modal \/-->
+					<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					  <div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+						  <div class="modal-header" style="display:block">
+							<button type="button" class="close" style="float: right;" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true">&times;</span>
+							</button>
+							<h3 class="modal-title" style="text-align: center">Zakres dat do bilansu</h3>
+						  </div>
+						 <h3 style="font-size: 20px; text-align: center;" class="mt-3 mb-0">Podaj datę początkową</h3>
+						  
+						<form action="balanceDate.php" method="post">
+							 <div class="modal-body">
+							  
+								<div class="input-group mb-3">
+								
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="icon-calendar"></i></span>
+									</div>
+										<input type="date" class="form-control" id="datePicker" name="datePicker" aria-label="Data" aria-describedby="basic-addon1">
+								</div>
+								<h3 style="font-size: 20px; text-align: center;" class="mt-3 mb-3">Podaj datę końcową</h3>
+								
+								<div class="input-group mb-3">
+								
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="icon-calendar"></i></span>
+									</div>
+										<input type="date" class="form-control" id="datePicker2" name="datePicker2" aria-label="Data" aria-describedby="basic-addon1">
+								</div>
+							 </div>
+					
+						  
+						  <div class="modal-footer"style="display: block;">
+						  <div class="col-lg-5 p-0 mb-3" style="float: left; margin-left: 0px;">
+							
+								<button class="btn btn-success btn-lg btn-block" name="uncommonDate" id="uncommonDate" type="submit" data-dismiss="modal" style="font-size: 15px;">Wybierz zakres dat</button>
+				
+							</div>
+							
+							<div class="col-lg-5 p-0 mb-3" style="float: right;">
+									
+								<button class="btn btn-danger btn-lg btn-block" type="button" data-dismiss="modal" style="font-size: 15px;">Zamknij</button>
+									
+							</div>
+						  </div>
+						</form>
+						</div>
+					  </div>
+					</div>
+					<!-- Modal /\-->
+					
 					<div class="balance   col-lg-6 text-center mt-3 mb-2">
 					<h2>PRZYCHODY</h2>
 					<?php
@@ -243,9 +291,15 @@
 						else
 						{
 							$user_id = $_SESSION['id'];
-
-							if($result = $connect->query("SELECT * FROM incomes WHERE user_id=$user_id AND date_of_income LIKE '$date1%' ORDER BY income_category_assigned_to_user_id, date_of_income"))
+							if (isset ($_SESSION['datka2']))
+							{
+								$date2 = $_SESSION['datka2'];
+								$income_query = "SELECT * FROM incomes WHERE user_id=$user_id AND date_of_income BETWEEN '$date1' AND '$date2' ORDER BY income_category_assigned_to_user_id, date_of_income";
+							}
+							else
+								$income_query = "SELECT * FROM incomes WHERE user_id=$user_id AND date_of_income LIKE '$date1%' ORDER BY income_category_assigned_to_user_id, date_of_income";
 							
+							if($result = $connect->query($income_query))
 							{
 								$user_number = $result->num_rows;
 								if($user_number >0)
@@ -307,9 +361,16 @@
 						{
 							$user_id = $_SESSION['id'];
 							
+							if (isset ($_SESSION['datka2']))
+							{
+								$date2 = $_SESSION['datka2'];
+								unset($_SESSION['datka2']);
+								$expense_query = "SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense BETWEEN '$date1' AND '$date2' ORDER BY expense_category_assigned_to_user_id, date_of_expense";
+							}
+							else
+								$expense_query = "SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense LIKE '$date1%' ORDER BY expense_category_assigned_to_user_id, date_of_expense";
 							
-							if($result = $connect->query("SELECT * FROM expenses WHERE user_id=$user_id AND date_of_expense LIKE '$date1%' ORDER BY expense_category_assigned_to_user_id, date_of_expense"))
-							
+							if($result = $connect->query($expense_query))
 							{
 								$user_number = $result->num_rows;
 								if($user_number >0)
@@ -365,7 +426,7 @@
 							}
 							else
 								echo "<div> Gratulacje! Twój bilans finansowy jest dodatni! Zaoszczędziłeś $balance.</div>";
-								echo $date1;
+								//echo $date1;
 								//echo $date2;
 						}
 						else
@@ -373,7 +434,7 @@
 						?>
 					</div>
 					
-					<div id="donutchart" style=" height: 500px;" class="col-lg-12 text-center mt-3 mb-2"></div>
+					<div id="donutchart" style=" height: 500px;" class="col-lg-12 mt-3 mb-2"></div>
 
 				</div>	
 				
@@ -396,19 +457,20 @@
 
 <script>
 var today = new Date();
+var year = today.getFullYear();
 
 $(document).ready(function(){
-	$("#prevoius_Month").click(function(){
+	$("#prevoius_Month").click(function(){ //id
 		var month = today.getMonth();
-		var year = today.getFullYear();
+
 		if(month<10)
 		{
 		  month="0"+month;
 		}
 		var datka = year+"-"+month;
-		alert (datka);
-		var textDate = $('#prevoius_Month').val();
-					 
+		//alert (datka);
+		var textDate = $('#prevoius_Month').val(); //name
+		
 			$.ajax({
 			url: "balanceDate.php",
 			method: "POST",
@@ -423,14 +485,13 @@ $(document).ready(function(){
 $(document).ready(function(){
 	$("#current_Month").click(function(){
 		var month = today.getMonth()+1;
-		var year = today.getFullYear();
 		if(month<10)
 		{
 		  month="0"+month;
 		}
 		var datka = year+"-"+month;
-		alert (datka);
-		var textDate = $('#current_Month').val();
+		//alert (datka);
+		var textDate = $('#current_Month').val(); 
 					 
 			$.ajax({
 			url: "balanceDate.php",
@@ -445,15 +506,33 @@ $(document).ready(function(){
 });
 $(document).ready(function(){
 	$("#current_Year").click(function(){
-		var year = today.getFullYear();
 		var datka = year;
-		alert (datka);
+		//alert (datka);
 		var textDate = $('#current_Year').val();
 					 
 			$.ajax({
 			url: "balanceDate.php",
 			method: "POST",
 			data: {datka:datka, textDate:textDate}, //js:php
+				success:function()
+				{
+					location.reload();
+				}		 
+		});
+	});
+});
+$(document).ready(function(){
+	$("#uncommonDate").click(function(){
+		var datka = $('#datePicker').val();
+		var datka2 = $('#datePicker2').val();
+		//alert (datka);
+		//alert (datka2);
+		var textDate = $('#uncommon_Text_Date').val();
+		//alert (textDate);			 
+			$.ajax({
+			url: "balanceDate.php",
+			method: "POST",
+			data: {datka:datka, datka2:datka2, textDate:textDate}, //js:php
 				success:function()
 				{
 					location.reload();
